@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Map;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -14,8 +13,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import util.DBUtil;
 import util.SecSql;
 
-//@WebServlet("/article/detail")
-public class ArticleDetailServlet extends HttpServlet {
+@WebServlet("/article/doWrite")
+public class ArticleDoWriteServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -29,8 +28,12 @@ public class ArticleDetailServlet extends HttpServlet {
 			e.printStackTrace();
 		}
 
-		String url = "jdbc:mysql://127.0.0.1:3306/ArticleManager?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul";
+		System.out.println("db 드라이버 연결 완료!!");
 
+		// String url = "jdbc:mysql://localhost:3306/ArticleManager";
+		String url = "jdbc:mysql://127.0.0.1:3306/ArticleManager?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul";		
+		System.out.println(url);
+		
 		String user = "root";
 		String password = "";
 
@@ -40,24 +43,24 @@ public class ArticleDetailServlet extends HttpServlet {
 			conn = DriverManager.getConnection(url, user, password);
 			response.getWriter().append("연결 성공!");
 
-//			DBUtil dbUtil = new DBUtil(request, response);
+			String title = request.getParameter("title");
+			String body = request.getParameter("body");
 
-			int id = Integer.parseInt(request.getParameter("id"));
-
-//			String sql = "SELECT * FROM article ORDER BY id DESC";
-//			String sql = String.format("SELECT * FROM article WHERE id = %d", id);
-
-			SecSql sql = SecSql.from("SELECT *");
-			sql.append("FROM article");
-			sql.append("WHERE id = ?", id);
+//			INSERT INTO article SET regDate = NOW(), updateDate = NOW(), author = 1, title = '제목1', `body` = '내용1';
 			
-			Map<String, Object> articleRow = DBUtil.selectRow(conn, sql);
+			SecSql sql = SecSql.from("INSERT INTO article");
+			sql.append("SET regDate = NOW(),");
+			sql.append("updateDate = NOW(),");
+			sql.append("author = 1,");
+			sql.append("title = ?,", title);
+			sql.append("`body` = ?;", body);
 
-			request.setAttribute("articleRow", articleRow);
-			request.getRequestDispatcher("/jsp/article/detail.jsp").forward(request, response);
+			int id = DBUtil.insert(conn, sql);
 
+			response.getWriter()
+					.append(String.format("<script>alert('%d번 글이 생성됨'); location.replace('list');</script>", id));
 		} catch (SQLException e) {
-			System.out.println("에러 1-1 : " + e);
+			System.out.println("에러 1-3 : " + e);
 		} finally {
 			try {
 				if (conn != null && !conn.isClosed()) {
@@ -69,6 +72,7 @@ public class ArticleDetailServlet extends HttpServlet {
 		}
 
 	}
+
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
