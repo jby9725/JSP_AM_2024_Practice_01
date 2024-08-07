@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Map;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -14,8 +13,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import util.DBUtil;
 import util.SecSql;
 
-@WebServlet("/member/doLogin")
-public class MemberDoLoginServlet extends HttpServlet {
+@WebServlet("/member/doLogout")
+public class MemberDoLogoutServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -29,7 +28,7 @@ public class MemberDoLoginServlet extends HttpServlet {
 			e.printStackTrace();
 		}
 
-		System.out.println("db 드라이버 연결 완료오다!!");
+		System.out.println("db 드라이버 연결 완료오쓰!!");
 
 		// String url = "jdbc:mysql://localhost:3306/ArticleManager";
 		String url = "jdbc:mysql://127.0.0.1:3306/ArticleManager?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul";		
@@ -42,41 +41,30 @@ public class MemberDoLoginServlet extends HttpServlet {
 
 		try {
 			conn = DriverManager.getConnection(url, user, pwd);
-			response.getWriter().append("연결 성고옹이다!");
+			response.getWriter().append("연결 성고옹쓰!");
 
 			String userId = request.getParameter("userId");
 			String password = request.getParameter("password");
 
 //			SELECT * FROM `member` WHERE userId='test01' AND `password`='test01';
 			
-			SecSql sql = SecSql.from("SELECT *");
-			sql.append("FROM `member`");
-			sql.append("WHERE userId= ?;", userId);
-//			sql.append("AND password = ?;", password);
+			SecSql sql = SecSql.from("SELECT count(*) FROM `member`");
+			sql.append("WHERE userId= ?", userId);
+			sql.append("AND password = ?;", password);
 
-			Map<String, Object> memberRow = DBUtil.selectRow(conn, sql);
+			boolean isMember = DBUtil.selectRowBooleanValue(conn, sql);
 
 			
-			if(memberRow.isEmpty()) {
+			if(isMember) {
 				response.getWriter()
-				.append(String.format("<script>alert('%s는 없는 아이디입니다.'); location.replace('../member/login');</script>", userId));				
-				
-				return;
+				.append(String.format("<script>alert('로그인 여부 : %s'); location.replace('../home/main');</script>", isMember));				
+			}
+			else {
+				response.getWriter()
+				.append(String.format("<script>alert('로그인 여부 : %s'); location.replace('login');</script>", isMember));
 			}
 			
-			
-			
-			if(memberRow.get("password").equals(password) == false) {
-				response.getWriter()
-				.append(String.format("<script>alert('비밀번호가 틀렸습니다.'); location.replace('../member/login');</script>"));				
-				
-				return;
-			}
-			
-//			response.getWriter().append((String.format("<script>alert('%s님 환영합니다..'); location.replace('../home/main');</script>"), memberRow.get("nickname"));
-			response.getWriter()
-			.append(String.format("<script>alert('%s님 환영합니다.'); location.replace('../home/main');</script>", memberRow.get("nickname")));
-			
+
 		
 		} catch (SQLException e) {
 			System.out.println("에러 1-3 : " + e);

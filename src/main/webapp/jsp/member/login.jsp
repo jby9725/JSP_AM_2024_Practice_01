@@ -9,7 +9,26 @@
 <body>
 	<h2>로그인</h2>
 
-	<form method="POST" action="doLogin">
+<script type="text/javascript">
+		function LoginForm__submit(form) {
+			// console.log('form.userId.value : ' + form.userId.value);
+			// trim() : 쓸모없는 공백 제거
+			if (form.userId.value.trim().length == 0) {
+				alert('아이디를 입력하시오.');
+				return;
+			}
+			if (form.password.value.trim().length == 0) {
+				alert('비밀번호를 입력하시오.');
+				return;
+			}
+			
+// 			전부 다 입력되어있다.
+			form.submit();
+		}
+	</script>
+
+	<form method="POST" action="doLogin"
+	onsubmit="LoginForm__submit(this); return false;">
 		<div>
 			아이디 : <input type="text" placeholder="아이디 입력" name="userId" />
 		</div>
