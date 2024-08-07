@@ -43,23 +43,21 @@ public class ArticleDoModifyServlet extends HttpServlet {
 			conn = DriverManager.getConnection(url, user, password);
 			response.getWriter().append("연결 성공!");
 
-			
+			int id = Integer.parseInt(request.getParameter("id"));
 			String title = request.getParameter("title");
 			String body = request.getParameter("body");
 
-//			INSERT INTO article SET regDate = NOW(), updateDate = NOW(), author = 1, title = '제목1', `body` = '내용1';
-			
-			SecSql sql = SecSql.from("INSERT INTO article");
-			sql.append("SET regDate = NOW(),");
-			sql.append("updateDate = NOW(),");
+			SecSql sql = SecSql.from("UPDATE article");
+			sql.append("SET updateDate = NOW(),");
 			sql.append("author = 1,");
 			sql.append("title = ?,", title);
-			sql.append("`body` = ?;", body);
+			sql.append("`body` = ?", body);
+			sql.append("WHERE id = ?", id);
 
-			int id = DBUtil.insert(conn, sql);
+			DBUtil.update(conn, sql);
 
 			response.getWriter()
-					.append(String.format("<script>alert('%d번 글이 생성됨'); location.replace('list');</script>", id));
+					.append(String.format("<script>alert('%d번 글이 수정됨'); location.replace('detail?id=%d');</script>", id, id));
 		} catch (SQLException e) {
 			System.out.println("에러 1-3 : " + e);
 		} finally {
