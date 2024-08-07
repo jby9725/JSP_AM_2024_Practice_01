@@ -3,7 +3,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%
+
 List<Map<String, Object>> articleRows = (List<Map<String, Object>>) request.getAttribute("articleRows");
+
+int cPage = (int) request.getAttribute("page");
+int totalPage = (int) request.getAttribute("totalPage");
+int totalCnt = (int) request.getAttribute("totalCnt");
 %>
 <!DOCTYPE html>
 <html>
@@ -16,6 +21,11 @@ List<Map<String, Object>> articleRows = (List<Map<String, Object>>) request.getA
 	<h2>게시물 목록</h2>
 
 	<a href="../home/main">메인 페이지로 </a>
+	<div>
+		총 게시글 수 :
+		<%=totalCnt%>
+		개
+	</div>
 
 	<table style="border-collapse: collapse; border-color: green;"
 		border="1px">
@@ -44,6 +54,33 @@ List<Map<String, Object>> articleRows = (List<Map<String, Object>>) request.getA
 			%>
 		</tbody>
 	</table>
+
+	<style type="text/css">
+.page {
+	font-size: 1.4rem;
+}
+
+.page>a {
+	color: black;
+	text-decoration: none;
+}
+
+.page>a.cPage {
+	color: red;
+	text-decoration: underline;
+}
+</style>
+
+	<div class="page">
+		<%
+		for (int i = 1; i <= totalPage; i++) {
+		%>
+		<a class="<%=cPage == i ? "cPage" : ""%>" href="list?page=<%=i%>"><%=i%></a>
+		<%
+		}
+		%>
+	</div>
+
 
 </body>
 </html>
