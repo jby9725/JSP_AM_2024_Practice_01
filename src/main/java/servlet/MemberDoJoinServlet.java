@@ -47,14 +47,31 @@ public class MemberDoJoinServlet extends HttpServlet {
 			String password = request.getParameter("password");
 			String nickname = request.getParameter("nickname");
 
+			// 파라미터 봣더니 길이가 0이면 막을수도 있다.
+			// 하지만 여기서 하지 않고 jsp 파일에서 해주었다.
+			
+			SecSql sql = SecSql.from("SELECT COUNT(*) as cnt");
+			sql.append("FROM `member`");
+			sql.append("WHERE userId = ?;", userId);
+			
+			boolean isJoinableUserId = DBUtil.selectRowIntValue(conn, sql) == 0;
+			
+			response.getWriter().append("결과는? : " + isJoinableUserId);
+			
+			if (isJoinableUserId == false) {
+				response.getWriter().append(String
+						.format("<script>alert('%s는 이미 사용중인 아이디입니다.'); location.replace('../member/join');</script>", userId));
+				return;
+			}
+			
 //			INSERT INTO `member` (`regDate`, `userId`, `password`, `nickname`)
 //			VALUES (NOW(), 'test01', 'test01', '홍길동');
 			
-			SecSql sql = SecSql.from("INSERT INTO `member`");
-			sql.append("SET regDate = NOW(),");
-			sql.append("userId = ?,", userId);
-			sql.append("password = ?,", password);
-			sql.append("nickname = ?;", nickname);
+			sql = SecSql.from("INSERT INTO `member`");
+			sql.append("SET `regDate` = NOW(),");
+			sql.append("`userId` = ?,", userId);
+			sql.append("`password` = ?,", password);
+			sql.append("`nickname` = ?;", nickname);
 
 			int id = DBUtil.insert(conn, sql);
 
