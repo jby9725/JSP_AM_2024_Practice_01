@@ -56,12 +56,12 @@ public class DispatcherServlet extends HttpServlet {
 			System.out.println(requestUri);
 
 			String[] reqUriBits = requestUri.split("/");
-			// ~~/s/article/list
-//			System.out.println(reqUriBits[0]);
-//			System.out.println(reqUriBits[1]);
-//			System.out.println(reqUriBits[2]);
-//			System.out.println(reqUriBits[3]);
-//			System.out.println(reqUriBits[4]);
+			// /X~X/s/article/list
+//			System.out.println(reqUriBits[0]); 공백
+//			System.out.println(reqUriBits[1]); JSP 어쩌구
+//			System.out.println(reqUriBits[2]); s
+//			System.out.println(reqUriBits[3]); article
+//			System.out.println(reqUriBits[4]); list
 
 			if (reqUriBits.length < 5) {
 				response.getWriter().append(String.format("<script>alert('올바른 요청이 아닙니다.'); </script>"));
@@ -76,6 +76,9 @@ public class DispatcherServlet extends HttpServlet {
 
 				if (actionMethodName.equals("list")) {
 					articleController.showList();
+				}
+				else if (actionMethodName.equals("")) {
+					
 				}
 
 			}
