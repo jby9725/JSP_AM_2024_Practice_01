@@ -14,19 +14,19 @@ public class ArticleWriteServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
+		response.setContentType("text/html;charset=UTF-8");
+		
+		//
+		
 		HttpSession session = request.getSession();
-		if(session != null) {
-			System.out.println("널이 아니야");
-			response.getWriter().append("널이 아니야");
-			String str = (String) session.getAttribute("isLogined");
-			response.getWriter().append(str);
-			System.out.println(str);
+		
+		if (session.getAttribute("loginedMemberId") == null) {
+			response.getWriter().append(
+					String.format("<script>alert('로그인을 하고 이용해주세요.'); location.replace('../member/login');</script>"));
+			return;
 		}
-		else {
-			System.out.println("널이야");
-			response.getWriter().append("널이야");
-		}
+		
+		//
 		
 		request.getRequestDispatcher("/jsp/article/write.jsp").forward(request, response);
 
