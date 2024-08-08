@@ -42,3 +42,14 @@ SET regDate = NOW(),
     author = 1,
     title = CONCAT('제목', SUBSTRING(RAND() * 1000 FROM 1 FOR 2)),
     `body` = CONCAT('내용', SUBSTRING(RAND() * 1000 FROM 1 FOR 2));
+    
+-- 1부터 3까지 랜덤 수
+SELECT CEILING(RAND() * 100);
+
+-- 문자열 붙이기 + 랜덤 수 출력 업데이트
+INSERT INTO article
+SET regDate = NOW(),
+    updateDate = NOW(),
+    author = CEILING(RAND() * 3),   
+    title = CONCAT('제목', SUBSTRING(RAND() * 1000 FROM 1 FOR 2)),
+    `body` = CONCAT('내용', SUBSTRING(RAND() * 1000 FROM 1 FOR 2));
