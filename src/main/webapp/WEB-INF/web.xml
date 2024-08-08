@@ -12,12 +12,12 @@ metadata-complete="false">
   </welcome-file-list>
     <servlet>
     <description></description>
-    <display-name>ArticleDeleteServlet</display-name>
-    <servlet-name>ArticleDeleteServlet</servlet-name>
-    <servlet-class>servlet.ArticleDeleteServlet</servlet-class>
+    <display-name>ArticleDoDeleteServlet</display-name>
+    <servlet-name>ArticleDoDeleteServlet</servlet-name>
+    <servlet-class>servlet.ArticleDoDeleteServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>ArticleDeleteServlet</servlet-name>
+    <servlet-name>ArticleDoDeleteServlet</servlet-name>
     <url-pattern>/article/doDelete</url-pattern>
   </servlet-mapping>
   <servlet>
