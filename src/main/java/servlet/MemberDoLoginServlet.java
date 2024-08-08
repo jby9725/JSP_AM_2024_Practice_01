@@ -11,6 +11,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import util.DBUtil;
 import util.SecSql;
 
@@ -73,7 +74,13 @@ public class MemberDoLoginServlet extends HttpServlet {
 				return;
 			}
 			
-//			response.getWriter().append((String.format("<script>alert('%s님 환영합니다..'); location.replace('../home/main');</script>"), memberRow.get("nickname"));
+			/////////////////////////// 여기부터
+			HttpSession session = request.getSession();
+			session.setAttribute("loginedMemberId", memberRow.get("id"));
+			session.setAttribute("loginedMemberUserId", memberRow.get("userId"));
+			session.setAttribute("loginedMember", memberRow);
+
+			
 			response.getWriter()
 			.append(String.format("<script>alert('%s님 환영합니다.'); location.replace('../home/main');</script>", memberRow.get("nickname")));
 			

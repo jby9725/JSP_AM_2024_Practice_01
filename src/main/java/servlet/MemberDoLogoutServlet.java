@@ -10,6 +10,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import util.DBUtil;
 import util.SecSql;
 
@@ -43,28 +44,12 @@ public class MemberDoLogoutServlet extends HttpServlet {
 			conn = DriverManager.getConnection(url, user, pwd);
 			response.getWriter().append("연결 성고옹쓰!");
 
-			String userId = request.getParameter("userId");
-			String password = request.getParameter("password");
-
-//			SELECT * FROM `member` WHERE userId='test01' AND `password`='test01';
+			HttpSession session = request.getSession();
+			session.removeAttribute("loginedMemberId");
+			session.removeAttribute("loginedMemberUserId");
+			session.removeAttribute("loginedMember");
 			
-			SecSql sql = SecSql.from("SELECT count(*) FROM `member`");
-			sql.append("WHERE userId= ?", userId);
-			sql.append("AND password = ?;", password);
-
-			boolean isMember = DBUtil.selectRowBooleanValue(conn, sql);
-
-			
-			if(isMember) {
-				response.getWriter()
-				.append(String.format("<script>alert('로그인 여부 : %s'); location.replace('../home/main');</script>", isMember));				
-			}
-			else {
-				response.getWriter()
-				.append(String.format("<script>alert('로그인 여부 : %s'); location.replace('login');</script>", isMember));
-			}
-			
-
+			response.getWriter().append(String.format("<script>alert('로그아웃 되었습니다.'); location.replace('../home/main');</script>"));
 		
 		} catch (SQLException e) {
 			System.out.println("에러 1-3 : " + e);
